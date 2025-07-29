@@ -1,0 +1,13 @@
+
+.custom-navbar {
+  background-color: #6f42c1;  // un viola personalizzato
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: #fff;
+
+  &:hover {
+    color: #d1c4e9;
+  }
+}
