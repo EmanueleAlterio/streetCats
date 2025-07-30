@@ -1,0 +1,71 @@
+$primary-color: #52b69a;
+$hover-button-color: #39997e;
+$background-image: url('../../assets/gatti.svg');
+
+.login-page {
+    overflow-x: hidden;
+    padding: 1rem;
+
+    background-image: $background-image;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: rgba(215, 212, 212, 0.1);
+        z-index: 0;
+    }
+    .card {
+            border: none;
+            border-radius: 10px;
+
+        h2 {
+            color: $primary-color;
+            font-weight: 700;
+        }
+
+        label {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .form-control {
+            border: 1px solid #ccc;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0.25rem rgba(244, 162, 97, 0.6);
+            border-color: $primary-color;
+            outline: none;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: $primary-color;
+            border: none;
+
+        &:hover {
+            background-color: $hover-button-color;
+        }
+        }
+
+        .form-text {
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: $primary-color;
+            text-decoration: none;
+
+        &:hover {
+            text-decoration: underline
+        }
+        }
+    }
+}
