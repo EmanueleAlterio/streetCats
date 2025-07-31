@@ -1,25 +1,33 @@
-// index.js
 const express = require('express');
 const cors = require('cors');
+const session = require('express-session');
 const pool = require('./config/db');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Importazione delle rotte dell'applicazione
+const authRoutes = require('./routes/auth.routes');
+
 // Middleware base
 app.use(cors());
 app.use(express.json());
 
-// Test DB
-app.get('/ping', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Errore nella connessione al DB:', err);
-    res.status(500).json({ error: 'Errore nel ping del database' });
-  }
+// Configurazione sessione
+app.use(session({
+  secret: process.env.JWT_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+// Definizione rotte
+app.use('/api/auth', authRoutes);
+
+// Middleware di gestione degli errori
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: err.message });
 });
 
 // Test route
