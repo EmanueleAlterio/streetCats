@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3001;
 
 // Importazione delle rotte dell'applicazione
 const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/users.routes');
+
+
 
 // Middleware base
 app.use(cors());
@@ -23,6 +26,7 @@ app.use(session({
 
 // Definizione rotte
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // Middleware di gestione degli errori
 app.use((err, req, res, next) => {

@@ -6,6 +6,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import Home from './pages/HomePage/Home';
 import Login from './pages/LoginPage/Login';
+import SignUp from './pages/SignUpPage/SignUp';
+import Profile from './pages/ProfilePage/Profile';
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login/>} />
+        <Route path="/signup" element={<SignUp/>} />
+        <Route path="/profile" element={<Profile/>} />
       </Routes>
     </Router>
   );
