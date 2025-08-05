@@ -8,3 +8,11 @@ exports.findById = async function (id) {
 
 	return new User(result.rows[0]);
 };
+
+exports.updateProfileImage = async function (id, filePath) {
+  	await db.query('UPDATE utente SET foto_profilo = $1 WHERE id = $2', [filePath, id]);
+};
+
+exports.removeProfileImage = async function (id) {
+	await db.query('UPDATE utente SET foto_profilo = NULL WHERE id = $1', [id]);
+}

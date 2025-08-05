@@ -1,0 +1,34 @@
+.profile-image-wrapper {
+	position: relative;
+	overflow: hidden;
+
+	.profile-image {
+		transition: transform 0.3s ease;
+	}
+
+	.overlay-plus {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.4);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		border-radius: 50%;
+	}
+
+	.plus-icon {
+		color: #fff;
+		font-size: 2rem;
+		font-weight: bold;
+		transform: translateY(-5%);
+	}
+
+	&:hover {
+
+		.overlay-plus {
+			opacity: 1;
+		}
+	}
+}

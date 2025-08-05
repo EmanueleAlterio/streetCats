@@ -27,6 +27,8 @@ app.use(session({
 // Definizione rotte
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/uploads', express.static('uploads'));
+
 
 // Middleware di gestione degli errori
 app.use((err, req, res, next) => {
