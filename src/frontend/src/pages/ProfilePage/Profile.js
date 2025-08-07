@@ -1,11 +1,20 @@
-import React, { useEffect, useState, useRef  } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { jwtDecode as jwt_decode } from 'jwt-decode';
 import './Profile.scss';
+import ConfirmModal from '../../elements/ConfirmModal/ConfirmModal';
+
+//Import per le icone
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 
 function Profile() {
 	const [user, setUser] = useState(null);
 	const [selectedFile, setSelectedFile] = useState(null);
+	const [showLogoutModal, setShowLogoutModal] = useState(false);
+	const [showRemovePhotoModal, setShowRemovePhotoModal] = useState(false);
 	const fileInputRef = useRef(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -64,6 +73,7 @@ function Profile() {
 	};
 
 	const handleRemovePhoto = async () => {
+		setShowRemovePhotoModal(false);
 		const token = localStorage.getItem('token');
 		if (!token) return;
 
@@ -85,6 +95,12 @@ function Profile() {
 		}
 	};
 
+	const confirmLogout = () => {
+		setShowLogoutModal(false);
+		localStorage.removeItem('token');
+		navigate('/login');
+	}
+
 	const handleButtonClick = () => {
 		fileInputRef.current.click(); // Simula il click sull'input nascosto
 	};
@@ -100,10 +116,26 @@ function Profile() {
 		: '/default-profile.png';
 
 	return (
-		<div className="d-flex justify-content-center align-items-center vh-100">
+		<div className=" profile-page d-flex justify-content-center align-items-center vh-100">
 			<div className="profile-card p-4 bg-light rounded shadow d-flex flex-column justify-content-center align-items-center" 
-			style={{ maxWidth: '500px', width: '100%', minWidth: '200px', minHeight:'400px'}}>
+			style={{ maxWidth: '500px', width: '100%', minWidth: '200px', minHeight:'400px', position:'relative'}}>
 				<div className="text-center mb-3">
+					<ConfirmModal
+						show={showLogoutModal}
+						title="Conferma Logout"
+						message="Sei sicuro di voler effettuare il logout?"
+						onConfirm={confirmLogout}
+						onCancel={() => setShowLogoutModal(false)}
+					/>
+
+					<button
+						onClick={() => setShowLogoutModal(true)}
+						className="btn btn-link logout-button "
+						title="Logout"
+					>
+						<FontAwesomeIcon icon={faDoorOpen} />
+					</button>
+
 					<div
 						className="profile-image-wrapper position-center mb-3 mx-auto"
 						onClick={handleButtonClick}
@@ -139,9 +171,17 @@ function Profile() {
 							year: "numeric",
 						})}
 					</p>
+
+					<ConfirmModal
+						show={showRemovePhotoModal}
+						title={"Rimozione Foto Profilo"}
+						message={"Vuoi rimuovere la foto profilo?"}
+						onConfirm={handleRemovePhoto}
+						onCancel={() => setShowRemovePhotoModal(false)}
+					/>
 					<button
-						onClick={handleRemovePhoto}
-						className="btn btn-outline-danger btn-sm mt-2"
+						onClick={() => setShowRemovePhotoModal(true)}
+						className="btn btn-outline-danger btn-md mt-2"
 					>
 						Rimuovi foto profilo
 					</button>
