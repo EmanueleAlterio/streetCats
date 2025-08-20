@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import { jwtDecode as jwt_decode } from 'jwt-decode';
+import axios from 'axios';
 import './Profile.scss';
 import ConfirmModal from '../../elements/ConfirmModal/ConfirmModal';
 
@@ -13,6 +14,7 @@ function Profile() {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [showRemovePhotoModal, setShowRemovePhotoModal] = useState(false);
+	const [error, setError] = useState(null);
 	const fileInputRef = useRef(null);
 	const navigate = useNavigate();
 
@@ -21,19 +23,16 @@ function Profile() {
 		if (!token) return;
 
 		try {
-		const decoded = jwt_decode(token);
-		const userId = decoded.id;
+			const decoded = jwt_decode(token);
+			const userId = decoded.id;
 
-		fetch(`http://localhost:3001/api/users/${userId}`, {
-			headers: {
-			Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => res.json())
-			.then((data) => setUser(data))
-			.catch((err) => console.error('Errore nel recupero dati utente:', err));
+			axios.get(`http://localhost:3001/api/users/${userId}`, {
+				headers: {Authorization: `Bearer ${token}`},
+			})
+			.then((res) => setUser(res.data))
+			.catch((err) => setError('Errore nel recupero dei dati utente'));
 		} catch (err) {
-		console.error('Token non valido:', err);
+			setError('Token non valido');
 		}
 	}, []);
 
@@ -55,22 +54,22 @@ function Profile() {
 		formData.append('fotoProfilo', file);
 
 		try {
-			const response = await fetch('http://localhost:3001/api/users/upload-profile-image', {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				body: formData,
-			});
+			const response = await axios.post(
+				'http://localhost:3001/api/users/upload-profile-image',
+				formData,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
-			const result = await response.json();
-			if (result.filePath) {
-				setUser((prev) => ({ ...prev, fotoProfilo: result.filePath }));
+			if (response.data.filePath) {
+				setUser((prev) => ({ ...prev, fotoProfilo: response.data.filePath }));
 			}
 		} catch (err) {
-			console.error("Errore durante l'upload:", err);
+			setError("Errore durante l'upload");
 		}
 	};
+
 
 	const handleRemovePhoto = async () => {
 		setShowRemovePhotoModal(false);
@@ -78,20 +77,15 @@ function Profile() {
 		if (!token) return;
 
 		try {
-			const response = await fetch('http://localhost:3001/api/users/remove-profile-image', {
-				method: 'DELETE',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			const response = await axios.delete('http://localhost:3001/api/users/remove-profile-image', { headers: { Authorization: `Bearer ${token}` }});
 
-			if (response.ok) {
+			if (response.status === 200) {
 				setUser((prev) => ({ ...prev, fotoProfilo: null }));
 			} else {
-				console.error('Errore nella rimozione della foto');
+				setError('Errore nella rimozione della foto');
 			}
 		} catch (err) {
-			console.error('Errore nella richiesta:', err);
+			setError('Errore nella rimozione della foto');
 		}
 	};
 

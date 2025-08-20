@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import "./SignUp.scss";
 
 // Import per icone
@@ -48,22 +49,16 @@ function SignUp() {
         }
 
         try {
-            const res = await fetch('http://localhost:3001/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
-            });
+            const res = await axios.post('http://localhost:3001/api/auth/register', { username, email, password });
 
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Errore nella registrazione');
-            }
-
-            const data = await res.json();
-            localStorage.setItem('token', data.token);
-            navigate('/');  // redirect alla home dopo registrazione
+            localStorage.setItem('token', res.data.token);
+            navigate('/');  
         } catch (err) {
-            setError(err.message);
+            if (err.response && err.response.data) {
+                setError(err.response.data.error || 'Errore nella registrazione');
+            } else {
+                setError(err.message);
+            }
         }
     };
 
@@ -79,7 +74,7 @@ function SignUp() {
                             type="text"
                             className="form-control form-control-lg"
                             id="username"
-                            placeholder="Username"
+                            placeholder="es: Garfield"
                             autoComplete='off'
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -93,7 +88,7 @@ function SignUp() {
                             type="email"
                             className="form-control form-control-lg"
                             id="email"
-                            placeholder="Email"
+                            placeholder="es: garfield@ilgatto.cat"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -106,7 +101,7 @@ function SignUp() {
                                 type={showPassword ? "text" : "password"}
                                 className="form-control form-control-lg"
                                 id="password"
-                                placeholder="Password"
+                                placeholder="es: MiaoPassword123"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 aria-describedby="passwordHelpBlock"
@@ -121,7 +116,7 @@ function SignUp() {
                             </button>
                         </div>
                         <div id="passwordHelpBlock" className="form-text">
-                            Your password must be 8-20 characters long, contain letters and numbers.
+                            La password deve essere lunga 8-20 caratteri e contenere almeno una lettera e un numero.
                         </div>
                     </div>
                     <div className="d-grid mb-3">

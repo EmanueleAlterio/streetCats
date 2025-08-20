@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.controller');
+const passwordValidator = require('../middleware/passwordValidator');
 
 /**
  * Rotta per il login di un utente.
@@ -14,6 +15,6 @@ router.post('/login', authController.login);
  * @route POST /api/auth/register
  * @controller register - Controller per la registrazione dell'utente.
  */
-router.post('/register', authController.register);
+router.post('/register', passwordValidator, authController.register);
 
 module.exports = router;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import petIcon from '../../assets/petIcon.svg';
 import './navbar.scss';
 
 // Import per le icone

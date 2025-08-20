@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import "./Login.scss"
 
 // Import per icone
@@ -22,25 +23,18 @@ function Login() {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
 
         try {
-            const res = await fetch('http://localhost:3001/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            if (!res.ok) {
-                throw new Error('Credenziali non valide');
-            }
-
-            const data = await res.json();
-            localStorage.setItem('token', data.token); // salva il token
+            const res = await axios.post('http://localhost:3001/api/auth/login', {email, password});
+            localStorage.setItem('token', res.data.token); // salva il token
             navigate('/'); // redirect alla home
         } catch (err) {
-            setError(err.message);
+            if (err.response && err.response.data) {
+                setError(err.response.data.error || 'Errore nel login');
+            } else {
+                setError(err.message);
+            }        
         }
     };
 
@@ -56,7 +50,7 @@ function Login() {
                         type="email"
                         className="form-control form-control-lg"
                         id="email"
-                        placeholder="Email"
+                        placeholder="es: garfield@ilgatto.cat"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -69,7 +63,7 @@ function Login() {
                             type={showPassword ? "text" : "password"}
                             className="form-control form-control-lg"
                             id="password"
-                            placeholder="Password"
+                            placeholder="es: MiaoPassword123"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             aria-describedby="passwordHelpBlock"
