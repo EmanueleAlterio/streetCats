@@ -42,4 +42,31 @@ exports.deletePost = async (req, res) =>  {
         res.status(500).json({ message: 'Errore interno del server '});
     }
 
-};
+}
+
+exports.getPostById = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await catsRepo.getPostById(postId);
+
+        if (!post){ return res.status(404).json({ message: 'Post non trovato' }); }
+
+        res.status(200).json({ gatto: post });
+
+    } catch (error) {
+        console.error('Errore nel recupero del post:', error);
+        res.status(500).json({ message: 'Errore interno al server.' });
+    }
+}
+
+exports.getLatestPosts = async (req, res) => {
+    try {
+        const posts = await catsRepo.getLatestPosts();
+        res.status(200).json({ gatti: posts });
+    
+    } catch (error) {
+        console.error('Errore nel recupero degli ultimi post:', error);
+        res.status(500).json({ message: 'Errore interno al server.' });    
+    }
+
+}

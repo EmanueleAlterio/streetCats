@@ -24,3 +24,18 @@ exports.deletePost = async (postId) => {
     const query = `DELETE FROM gatto WHERE id = $1`;
     await db.query(query, [postId]);
 };
+
+exports.getPostById = async (id) => {
+    const query = `SELECT * FROM gatto WHERE id = $1;`;
+    const result = await db.query(query, [id]);
+    if (result.rows.length === 0) return null;
+    return new Cats(result.rows[0]);
+};
+
+exports.getLatestPosts = async () => {
+    const query = ` SELECT * FROM gatto ORDER BY data_inserimento DESC LIMIT 5; `;
+    const result = await db.query(query);
+    return result.rows.map(row => new Cats(row));
+};
+
+

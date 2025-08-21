@@ -12,6 +12,11 @@ router.post('/add-cats', authMiddleware, uploadCatFoto.single('foto'), catContro
 // Rotta per eliminare un post
 router.delete('/delete/:id', authMiddleware, checkPostOwner, catController.deletePost);
 
+// Rotta per recuperare gli ultimi post caricati
+router.get('/cat/latest', catController.getLatestPosts);
+
+// Rotta per recuperare un post tramite id
+router.get('/cat/:id', catController.getPostById);
 
 
 module.exports = router;
