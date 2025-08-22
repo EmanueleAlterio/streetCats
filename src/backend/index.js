@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3001;
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/users.routes');
 const catRoutes = require('./routes/cats.routes');
+const commentRoutes = require('./routes/comments.routes');
 
 // --- Middleware di sicurezza ---
 // Helmet per impostare header sicuri
@@ -62,6 +63,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/posts', catRoutes);
+app.use('/api/comments', commentRoutes)
 
 
 // Middleware di gestione degli errori
